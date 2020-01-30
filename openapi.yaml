@@ -33,6 +33,61 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Movies"
+  /directors:
+    post:
+      operationId: "addDirector"
+      requestBody: 
+          description: "Director to be added"
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Director"
+      responses:
+        201:
+          description: "director created"
+        422:
+          description: "Problems with your request"
+    get:
+      operationId: "listDirectors"
+      responses:
+        200:
+          description: "The list of directors"
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Directors"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Directors"
+  /actors:
+    post:
+      operationId: "addActor"
+      requestBody: 
+          description: "Actor to be added"
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Actor"
+      responses:
+        201:
+          description: "actor created"
+        422:
+          description: "Problems with your request"
+    get:
+      operationId: "listActors"
+      responses:
+        200:
+          description: "The list of actors"
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Actors"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Actors"
+  
   /movies/{id}:
     get:
       operationId: "getMovie"
@@ -50,11 +105,63 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Movie"
+    delete:
+      description: "deletes a single movie based on the ID supplied"
+      operationId: "deleteMovie"
+      parameters:
+        - name: "id"
+          in: path
+          description: "ID of movie to delete"
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: "movie deleted"
+  
   /movies/{movieId}/critics:
     post:
+      operationId: "addCritic"
+      parameters: 
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      requestBody: 
+          description: "Critic to be added"
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Critic"
+      responses:
+        200:
+          description: "List of critics from the movie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Critics"
     get:
       operationId: "listCriticsFromMovie"
+      parameters: 
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      responses:
+        200:
+          description: "list of critics from the movie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Critics"
+      
   /movies/{movieId}/critics/criticId}:
+    
     get:
       operationId: "getCriticFromMovie"
       parameters: 
@@ -70,6 +177,33 @@ paths:
         description: "id of the critic"
         schema:
           type: string
+      responses:
+        200:
+          description: "Critic of the movie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Critic"
+    delete:
+      description: "deletes a single critic based on the IDs supplied"
+      operationId: "deleteCritic"
+      parameters:
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      - name: "criticId"
+        in: path
+        required: true
+        description: "id of the critic"
+        schema:
+          type: string
+      
+      responses:
+        '204':
+          description: "critic deleted"
 components:
   schemas:
     Movie:
