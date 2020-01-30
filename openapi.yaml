@@ -1,10 +1,12 @@
 openapi: 3.0.0
+
 info:
   description: "Example REST API"
   title: "The Movies API"
   version: "0.1.0"
 servers:
 - url: "https://api.example.com"
+
 paths:
   /movies:
     post:
@@ -458,7 +460,19 @@ paths:
                 $ref: "#/components/schemas/Rates"
     get:
       operationId: "listRatesFromMovie"
-      parameters: 
+      parameters:
+      - in: query
+        name: "minRate"
+        schema:
+          type: integer
+          default: 0
+        description: "minimal rate"
+      - in: query
+        name: "maxRate"
+        schema:
+          type: integer
+          default: 5
+        description: "maximal rate"
       - name: "movieId"
         in: path
         required: true
@@ -522,7 +536,14 @@ paths:
       responses:
         '204':
           description: "rate deleted"
+security:
+  - bearerAuth: []
 components:
+  securitySchemes:
+    bearerAuth:           # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     Movie:
       type: "object"
