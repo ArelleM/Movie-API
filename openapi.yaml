@@ -23,16 +23,58 @@ paths:
           description: "Problems with your request"
     get:
       operationId: "listMovies"
+      parameters:
+        - in: query
+          name: "offset"
+          schema:
+            type: integer
+          description: The number of items to skip before starting to collect the result set
+        - in: query
+          name: "limit"
+          schema:
+            type: integer
+            default: 25
+          description: The numbers of items to return
+        - name:  "name"
+          in: query
+          schema:
+            type: string
+        - name: "actor"
+          in: query
+          schema:
+            type: string
+        - name: "director"
+          in: query
+          schema:
+            type: string
+        - name: "yearBefore"
+          in: query
+          schema:
+            type: integer
+        - name: "yearAfter"
+          in: query
+          schema:
+            type: integer
       responses:
         200:
           description: "The list of movies"
           content:
             application/xml:
               schema:
-                $ref: "#/components/schemas/Movies"
+                type: "object"
+                properties:
+                  title:
+                    type: "string"
+                  poster:
+                    type: "string"
             application/json:
               schema:
-                $ref: "#/components/schemas/Movies"
+                type: "object"
+                properties:
+                  title:
+                    type: "string"
+                  poster:
+                    type: "string"
   /directors:
     post:
       operationId: "addDirector"
@@ -50,19 +92,47 @@ paths:
           description: "Problems with your request"
     get:
       operationId: "listDirectors"
+      parameters: 
+        - name:  "name"
+          in: query
+          schema:
+            type: string
+        - name: "movie"
+          in: query
+          schema:
+            type: string
       responses:
         200:
           description: "The list of directors"
           content:
             application/xml:
               schema:
-                $ref: "#/components/schemas/Directors"
+                type: "object"
+                properties:
+                  name:
+                    type: "string"
+                  photo:
+                    type: "string"
             application/json:
               schema:
-                $ref: "#/components/schemas/Directors"
+                type: "object"
+                properties:
+                  name:
+                    type: "string"
+                  photo:
+                    type: "string"
   /actors:
     post:
       operationId: "addActor"
+      parameters: 
+        - name:  "name"
+          in: query
+          schema:
+            type: string
+        - name: "movie"
+          in: query
+          schema:
+            type: string
       requestBody: 
           description: "Actor to be added"
           required: true
@@ -83,10 +153,20 @@ paths:
           content:
             application/xml:
               schema:
-                $ref: "#/components/schemas/Actors"
+                type: "object"
+                properties:
+                  name:
+                    type: "string"
+                  photo:
+                    type: "string"
             application/json:
               schema:
-                $ref: "#/components/schemas/Actors"
+                type: "object"
+                properties:
+                  name:
+                    type: "string"
+                  photo:
+                    type: "string"
   
   /movies/{id}:
     get:
@@ -102,6 +182,9 @@ paths:
         200:
           description: "the movie"
           content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Movie"
             application/json:
               schema:
                 $ref: "#/components/schemas/Movie"
@@ -118,7 +201,145 @@ paths:
       responses:
         '204':
           description: "movie deleted"
-  
+  /movies/{movieId}/director:
+    post:
+      operationId: "addDirectorFromMovie"
+      parameters: 
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      requestBody: 
+          description: "Director to be added"
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Director"
+      responses:
+        200:
+          description: "Shows the director of the movie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Director"
+    get:
+      operationId: "DirectorFromMovie"
+      parameters: 
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      responses:
+        200:
+          description: "shows Director from the movie"
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Director'
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Director"
+  /movies/{movieId}/actors:
+    post:
+      operationId: "addActorFromMovie"
+      parameters: 
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      requestBody: 
+          description: "Actor to be added"
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Actor"
+      responses:
+        200:
+          description: "List of actors from the movie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Actors"
+    get:
+      operationId: "listActorsFromMovie"
+      parameters: 
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      responses:
+        200:
+          description: "list of actors from the movie"
+          content:
+            application/xml:
+              schema:
+                type: "object"
+                properties:
+                  name:
+                    type: "string"
+                  photo:
+                    type: "string"
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  name:
+                    type: "string"
+                  photo:
+                    type: "string"
+  /movies/{movieId}/actors/{actorId}:
+    get:
+      operationId: "getActorFromMovie"
+      parameters: 
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      - name: "actorId"
+        in: path
+        required: true
+        description: "id of the actor"
+        schema:
+          type: string
+      responses:
+        200:
+          description: "Actor of the movie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Actor"
+    delete:
+      description: "deletes a single actor based on the IDs supplied"
+      operationId: "deleteActor"
+      parameters:
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      - name: "actorId"
+        in: path
+        required: true
+        description: "id of the actor"
+        schema:
+          type: string
+      
+      responses:
+        '204':
+          description: "actor deleted"
   /movies/{movieId}/critics:
     post:
       operationId: "addCritic"
@@ -156,11 +377,14 @@ paths:
         200:
           description: "list of critics from the movie"
           content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Critics"
             application/json:
               schema:
                 $ref: "#/components/schemas/Critics"
       
-  /movies/{movieId}/critics/criticId}:
+  /movies/{movieId}/critics/{criticId}:
     
     get:
       operationId: "getCriticFromMovie"
@@ -181,6 +405,9 @@ paths:
         200:
           description: "Critic of the movie"
           content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Critic"
             application/json:
               schema:
                 $ref: "#/components/schemas/Critic"
@@ -204,6 +431,97 @@ paths:
       responses:
         '204':
           description: "critic deleted"
+          
+  /movies/{movieId}/rates:
+    post:
+      operationId: "addRate"
+      parameters: 
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      requestBody: 
+          description: "Rate to be added"
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rate"
+      responses:
+        200:
+          description: "List of rates from the movie"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rates"
+    get:
+      operationId: "listRatesFromMovie"
+      parameters: 
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      responses:
+        200:
+          description: "list of rates from the movie"
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Rates"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rates"
+                
+  /movies/{movieId}/rates/{rateId}:
+    get:
+      operationId: "getRateFromMovie"
+      parameters: 
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      - name: "rateId"
+        in: path
+        required: true
+        description: "id of the rate"
+        schema:
+          type: string
+      responses:
+        200:
+          description: "Rate of the movie"
+          content:
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Rate"
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rate"
+    delete:
+      description: "deletes a single rate based on the IDs supplied"
+      operationId: "deleteRate"
+      parameters:
+      - name: "movieId"
+        in: path
+        required: true
+        description: "id of the movie"
+        schema:
+          type: string
+      - name: "rateId"
+        in: path
+        required: true
+        description: "id of the rate"
+        schema:
+          type: string
+      
+      responses:
+        '204':
+          description: "rate deleted"
 components:
   schemas:
     Movie:
@@ -212,7 +530,7 @@ components:
         - title
         - pitch
         - poster
-        - trailer
+        - director
         - actors
       properties:
         title:
