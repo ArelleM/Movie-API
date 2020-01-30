@@ -76,13 +76,131 @@ components:
       type: "object"
       required: 
         - title
+        - pitch
+        - poster
+        - trailer
+        - actors
       properties:
         title:
           type: "string"
         pitch:
           type: "string"
+        poster:
+          type: "string"
+        trailer:
+          type: "string"
+        director:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Directors"
+        actors:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Actors"
+        critics:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Critics'
+        rate:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Rates'
     Movies:
       type: "array"
       items:
         $ref: "#/components/schemas/Movie"
+    Director:
+      type: "object"
+      required: 
+        - name
+        - photo
+        - country
+        - bio
+        - birthday
+        - movies
+      properties:
+        name:
+          type: "string"
+        photo:
+          type: "string"
+        country:
+          type: "string"
+        bio:
+          type: "string"
+        birthday:
+          type: "string"
+          format: "date"
+        movies:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Movies"
+    Directors:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Director"
+    Actor:
+      type: "object"
+      required: 
+        - name
+        - photo
+        - country
+        - bio
+        - birthday
+        - movies
+      properties:
+        name:
+          type: "string"
+        photo:
+          type: "string"
+        country:
+          type: "string"
+        bio:
+          type: "string"
+        birthday:
+          type: "string"
+          format: "date"
+        movies:
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Movies"
+    Actors:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Actor"
+    Critic:
+      type: "object"
+      required: 
+        - content
+        - movie
+      properties:
+        content:
+          type: "string"
+        movie: 
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Movie"
+    Critics:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Critic"
+    Rate:
+      type: "object"
+      required: 
+        - value
+        - movie
+      properties:
+        value:
+          type: "integer"
+        movie: 
+          type: "array"
+          items:
+            $ref: "#/components/schemas/Movie"
+    Rates:
+      type: "array"
+      items:
+        $ref: "#/components/schemas/Rate"
+        
+      
+
+
           
